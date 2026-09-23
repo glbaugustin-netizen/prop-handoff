@@ -50,6 +50,9 @@ BL_INFO_PATTERN = re.compile(r"^bl_info\s*=\s*\{.*?^\}\n\n?", re.DOTALL | re.MUL
 #: The platform validator refuses taglines longer than 64 characters or
 #: ending with punctuation (strict validation).
 DEFAULT_TAGLINE = "Move props between hands without touching constraints or keys"
+#: Project page shown by the platform (optional field, but the repository is
+#: where the issues and the releases live).
+DEFAULT_WEBSITE = "https://github.com/glbaugustin-netizen/prop-handoff"
 
 MANIFEST_TEMPLATE = '''schema_version = "1.0.0"
 id = "prop_handoff"
@@ -61,6 +64,7 @@ type = "add-on"
 blender_version_min = "4.2.0"
 license = ["SPDX:GPL-3.0-or-later"]
 tags = ["Animation", "Rigging"]
+website = "{website}"
 '''
 
 
@@ -85,7 +89,7 @@ def strip_bl_info(init_source):
     return stripped
 
 
-def build(tagline):
+def build(tagline, website):
     """Populate the build folder and write the zip. Returns (version, files)."""
     with open(os.path.join(SOURCE_DIR, "__init__.py"), encoding="utf-8") as handle:
         init_source = handle.read()
@@ -117,7 +121,7 @@ def build(tagline):
     shutil.copyfile(license_path, os.path.join(BUILD_DIR, "LICENSE"))
     written.append("LICENSE")
     with open(os.path.join(BUILD_DIR, "blender_manifest.toml"), "w", encoding="utf-8", newline="\n") as handle:
-        handle.write(MANIFEST_TEMPLATE.format(version=version, tagline=tagline))
+        handle.write(MANIFEST_TEMPLATE.format(version=version, tagline=tagline, website=website))
     written.append("blender_manifest.toml")
 
     with zipfile.ZipFile(ZIP_PATH, "w", zipfile.ZIP_DEFLATED) as archive:
@@ -200,9 +204,10 @@ def main():
     parser.add_argument("--tagline", default=DEFAULT_TAGLINE, help="manifest tagline (64 characters max)")
     parser.add_argument("--validate", action="store_true", help="run `blender --command extension validate`")
     parser.add_argument("--blender", default="", help="Blender executable for the validation")
+    parser.add_argument("--website", default=DEFAULT_WEBSITE, help="manifest website (project page)")
     arguments = parser.parse_args()
 
-    version, entries = build(arguments.tagline)
+    version, entries = build(arguments.tagline, arguments.website)
     print("version %s -> %s" % (version, os.path.relpath(ZIP_PATH, HERE)))
     for entry in entries:
         print("   ", entry)

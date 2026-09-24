@@ -1,0 +1,58 @@
+name: Bug report
+description: Something does not behave as the manual describes
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report this. The more precise the steps,
+        the faster it can be reproduced and fixed.
+  - type: input
+    id: blender
+    attributes:
+      label: Blender version
+      placeholder: "5.2.0, 4.2 LTS..."
+    validations:
+      required: true
+  - type: input
+    id: addon
+    attributes:
+      label: PropHandoff version
+      description: "Edit > Preferences > Add-ons, or the version shown on the extension page"
+      placeholder: "0.3.3"
+    validations:
+      required: true
+  - type: dropdown
+    id: rig
+    attributes:
+      label: Rig
+      options:
+        - Auto-Rig Pro
+        - Rigify
+        - Custom rig
+        - No rig (plain objects)
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps, frame by frame
+      description: What you clicked, at which frame, in which order - from a fresh file if possible.
+      placeholder: |
+        1. Frame 1: Setup Prop on the sword
+        2. Frame 10: Assign -> Left hand
+        3. Frame 25: Grip Zone > Lock
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected, and what happened instead
+    validations:
+      required: true
+  - type: textarea
+    id: extra
+    attributes:
+      label: Screenshot, video or .blend file (optional)
+      description: Drag the file into this field. A short screen capture of the problem is often the fastest way to explain it.
